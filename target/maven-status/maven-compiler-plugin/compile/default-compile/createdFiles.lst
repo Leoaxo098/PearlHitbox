@@ -1,3 +1,7 @@
 com\pearlhitbox\PearlHitboxPlugin.class
+com\pearlhitbox\PearlHitboxTask.class
 com\pearlhitbox\HitboxConfig$HitMode.class
+com\pearlhitbox\PearlHitboxTask$1.class
 com\pearlhitbox\HitboxConfig.class
+com\pearlhitbox\PearlHitboxHitEvent.class
+com\pearlhitbox\PearlHitboxListener.class
