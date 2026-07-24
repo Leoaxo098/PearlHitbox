@@ -1,0 +1,103 @@
+# PearlHitbox configuration
+#
+# Vanilla's real ender pearl collision box is tiny (~0.25 blocks wide) and moving fast,
+# which makes it very hard to snipe with a thrown/breeze wind charge. This plugin adds a
+# *virtual* detection radius around in-flight ender pearls: every `check-interval-ticks`,
+# it looks for allowed "trigger" entities near each pearl and, if one is close enough,
+# treats it as a direct hit — giving the pearl a velocity kick instead of relying on the
+# real (unmodifiable) vanilla hitbox.
+
+hitbox:
+  # Master toggle for the whole feature.
+  enabled: true
+
+  # Radius (in blocks) of the virtual sphere checked around each flying ender pearl.
+  # Vanilla's real hitbox is roughly 0.25 blocks wide (~0.125 half-extent).
+  # - Increase this (e.g. 0.8 - 1.2) to make pearls MUCH easier to hit with wind charges.
+  # - Decrease this (e.g. 0.1 - 0.2) to make it stricter/closer to vanilla, or even harder.
+  radius: 0.6
+
+  # How often (in ticks, 20 ticks = 1 second) the plugin scans for nearby trigger entities.
+  # 1 = every tick (most accurate, slightly more CPU). Raise to 2-4 on busy servers.
+  check-interval-ticks: 1
+
+  # Minimum ticks that must pass before the SAME pearl can register another hit.
+  # Prevents a pearl from being hit multiple times in the same frame/tick window.
+  hit-cooldown-ticks: 5
+
+  # What happens when a valid trigger (e.g. a wind charge) hits a pearl's virtual hitbox:
+  #   TELEPORT - instantly teleports the pearl's owner to the pearl's current location right
+  #              there (mirrors vanilla's own pearl-landing teleport), then removes the pearl.
+  #              This is the classic "hit your own pearl mid-air to warp to it early" behavior.
+  #   BOOST    - does NOT teleport anyone. Instead it redirects/boosts the pearl's velocity in
+  #              the wind charge's direction so it keeps flying, and the normal vanilla teleport
+  #              only happens later once the (now faster/higher) pearl naturally hits a block.
+  mode: TELEPORT
+
+  # If true, the projectile that triggered the hit (e.g. the wind charge) is removed on impact,
+  # simulating it "bursting" against the pearl instead of continuing to fly past it.
+  # If false, the trigger projectile keeps flying. When false AND redirect-trigger-to-look is
+  # true, the original wind charge is removed and a FRESH one is spawned at the pearl aimed
+  # along the player's look direction, so it flies cleanly past instead of hitting the player
+  # (vanilla "deflect" feel). We spawn a new one rather than editing the original's velocity
+  # because vanilla resolves the wind charge's player collision on the same tick it is
+  # detected near the player - a velocity edit would be ignored and it'd still hit you.
+  consume-projectile: false
+
+  # Only used when consume-projectile is false. Spawns a deflected wind charge travelling in
+  # the direction the player is currently looking.
+  redirect-trigger-to-look: true
+
+  effects:
+    particles: true
+    sound: true
+
+  # Only used when mode is TELEPORT.
+  teleport:
+    # Use the player's current look direction after teleporting instead of the pearl's
+    # own rotation (which is usually whatever direction it was thrown/traveling in).
+    keep-player-look: true
+
+    # Preserve player velocity/momentum across teleportation instead of resetting it to zero.
+    preserve-velocity: true
+
+    # Whether to apply the small "ender pearl fall damage" vanilla normally deals on landing.
+    deal-damage: true
+    damage-amount: 5.0
+
+    # Remove the pearl entity after teleporting (mirrors vanilla, which always consumes the pearl).
+    remove-pearl: true
+
+    # Extra vertical offset (in blocks) added to the warp destination. 0.0 lands you
+    # exactly at the pearl's position. A small positive value (e.g. 0.5) can help you
+    # land standing on top of a block/surface instead of partially inside it.
+    vertical-offset: 0.0
+
+  # Only used when mode is BOOST.
+  boost:
+    # How much velocity is transferred from the triggering projectile to the pearl.
+    # This is a multiplier applied to the (normalized) direction the wind charge was moving.
+    push-strength: 1.6
+
+    # Extra flat upward velocity added on top of the push, to help the "pearl upward" launch.
+    vertical-boost: 0.35
+
+# Enable verbose logging of each detected hit / owner resolution. Useful for debugging
+# why a wind charge doesn't seem to trigger a teleport. Set true, run /pearlhitbox reload,
+# throw a pearl and hit it, then check the console.
+debug: false
+
+# Controls WHICH entities are allowed to interact with the enlarged/shrunk pearl hitbox.
+# Everything not listed here still uses vanilla collision as normal - this plugin only
+# changes what can trigger the *virtual* hit described above.
+allowed-triggers:
+  # If true, ONLY player-thrown wind charges (and breeze wind charges, if enabled below)
+  # can trigger the virtual hitbox. Nothing else (arrows, snowballs, other players, etc.)
+  # will register a hit, even if standing/flying right next to the pearl.
+  only-windcharge: true
+
+  # Whether player-thrown Wind Charge (EntityType.WIND_CHARGE) items count as a valid trigger.
+  include-windcharge: true
+
+  # Whether a Breeze mob's wind charge attack (EntityType.BREEZE_WIND_CHARGE) also counts.
+  include-breeze-windcharge: true
