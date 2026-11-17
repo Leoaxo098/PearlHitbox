@@ -154,7 +154,7 @@ public class PearlHitboxTask {
             pearl.getWorld().spawnParticle(Particle.GUST, pearl.getLocation(), 12, 0.15, 0.15, 0.15, 0.02);
         }
         if (config.isSoundEnabled()) {
-            pearl.getWorld().playSound(pearl.getLocation(), Sound.ENTITY_BREEZE_WIND_BURST, 1.0f, 1.0f);
+            pearl.getWorld().playSound(pearl.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1.0f, 1.0f);
         }
 
         // Resolve the owner. Prefer the persistent owner UUID (most reliable for
@@ -201,22 +201,22 @@ public class PearlHitboxTask {
             }
         }
 
+        // Preserve the player's velocity/momentum across teleportation so mid-air warps
+        // keep their momentum (always on - not configurable).
         Vector currentVelocity = player.getVelocity().clone();
 
         // Use the same teleport cause vanilla ender pearls use so portals, plugins and
         // other mechanics treat this exactly like a real pearl landing.
         player.teleport(target, TeleportCause.ENDER_PEARL);
 
-        if (config.isTeleportPreserveVelocity()) {
-            player.setVelocity(currentVelocity);
-            final Player targetPlayer = player;
-            final Vector preservedVelocity = currentVelocity;
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (targetPlayer.isOnline()) {
-                    targetPlayer.setVelocity(preservedVelocity);
-                }
-            }, 1L);
-        }
+        player.setVelocity(currentVelocity);
+        final Player targetPlayer = player;
+        final Vector preservedVelocity = currentVelocity;
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (targetPlayer.isOnline()) {
+                targetPlayer.setVelocity(preservedVelocity);
+            }
+        }, 1L);
 
         if (config.isTeleportDealDamage()) {
             player.damage(config.getTeleportDamageAmount());

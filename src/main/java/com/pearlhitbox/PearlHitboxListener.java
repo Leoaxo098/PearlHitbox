@@ -65,9 +65,6 @@ public class PearlHitboxListener implements Listener {
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerTeleport(org.bukkit.event.player.PlayerTeleportEvent event) {
-        if (!config.isTeleportPreserveVelocity()) {
-            return;
-        }
         if (event.getCause() == org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
             Player player = event.getPlayer();
             org.bukkit.util.Vector velocity = player.getVelocity().clone();

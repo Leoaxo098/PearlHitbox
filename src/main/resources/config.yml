@@ -49,7 +49,7 @@ hitbox:
   redirect-trigger-to-look: true
 
   effects:
-    particles: true
+    particles: false
     sound: true
 
   # Only used when mode is TELEPORT.
@@ -57,9 +57,6 @@ hitbox:
     # Use the player's current look direction after teleporting instead of the pearl's
     # own rotation (which is usually whatever direction it was thrown/traveling in).
     keep-player-look: true
-
-    # Preserve player velocity/momentum across teleportation instead of resetting it to zero.
-    preserve-velocity: true
 
     # Whether to apply the small "ender pearl fall damage" vanilla normally deals on landing.
     deal-damage: true
@@ -101,3 +98,7 @@ allowed-triggers:
 
   # Whether a Breeze mob's wind charge attack (EntityType.BREEZE_WIND_CHARGE) also counts.
   include-breeze-windcharge: true
+
+  # Only used when only-windcharge is false. Additional Bukkit EntityType names (as strings)
+  # that are also allowed to trigger the virtual pearl hitbox, e.g. ["ARROW", "TRIDENT", "SNOWBALL"]
+  extra-entity-types: []

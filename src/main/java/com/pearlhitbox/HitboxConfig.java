@@ -28,7 +28,6 @@ public class HitboxConfig {
     private boolean soundEnabled;
 
     private boolean teleportKeepLook;
-    private boolean teleportPreserveVelocity;
     private boolean teleportDealDamage;
     private double teleportDamageAmount;
     private boolean teleportRemovePearl;
@@ -72,7 +71,6 @@ public class HitboxConfig {
         this.mode = parsedMode;
 
         this.teleportKeepLook = cfg.getBoolean("hitbox.teleport.keep-player-look", true);
-        this.teleportPreserveVelocity = cfg.getBoolean("hitbox.teleport.preserve-velocity", true);
         this.teleportDealDamage = cfg.getBoolean("hitbox.teleport.deal-damage", true);
         this.teleportDamageAmount = cfg.getDouble("hitbox.teleport.damage-amount", 5.0);
         this.teleportRemovePearl = cfg.getBoolean("hitbox.teleport.remove-pearl", true);
@@ -128,10 +126,6 @@ public class HitboxConfig {
 
     public boolean isTeleportKeepLook() {
         return teleportKeepLook;
-    }
-
-    public boolean isTeleportPreserveVelocity() {
-        return teleportPreserveVelocity;
     }
 
     public boolean isTeleportDealDamage() {
