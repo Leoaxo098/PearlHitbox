@@ -2,8 +2,9 @@ name: PearlHitbox
 version: '1.0.0'
 main: com.pearlhitbox.PearlHitboxPlugin
 api-version: '1.21'
-author: YourName
+author: Leo
 description: Expands or shrinks the effective ender pearl hitbox for wind charge hits, making the wind-charge-pearl launch trick easier to land.
+website: https://modrinth.com/plugin/pearlhitbox
 
 commands:
   pearlhitbox:
